@@ -1,0 +1,35 @@
+switch(temp)
+{
+	case 'P':
+		toggle = 1;
+		break;
+
+	case 'R':
+		toggle = 0;
+		break;
+
+	case 'U':
+		MINUTES = 5;
+		break;
+
+	case 'V':
+		MINUTES = 15;
+		break;
+
+	case 'W':
+		MINUTES = 30;
+		break;
+
+	case 'X':
+		MINUTES = 60;
+		break;
+
+	case 'Y':
+		MINUTES = 90;
+		break;
+
+	case 'Z':
+		MINUTES = 120;
+		break;
+
+}

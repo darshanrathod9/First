@@ -1,0 +1,56 @@
+C51 COMPILER V9.60.0.0   TIMER                                                             10/21/2023 11:31:50 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE TIMER
+OBJECT MODULE PLACED IN .\Objects\Timer.obj
+COMPILER INVOKED BY: D:\Keil\C51\BIN\C51.EXE Timer.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\Timer.
+                    -lst) TABS(2) OBJECT(.\Objects\Timer.obj)
+
+line level    source
+
+   1          
+   2          
+   3          void initTimer0() 
+   4          {
+   5   1          TMOD = 0x01;    // Set Timer 0 to Mode 1 (16-bit timer)
+*** ERROR C202 IN LINE 5 OF Timer.c: 'TMOD': undefined identifier
+   6   1          TH0 = 0x4B;     // Load the high byte for a 50ms delay
+*** ERROR C202 IN LINE 6 OF Timer.c: 'TH0': undefined identifier
+   7   1          TL0 = 0xFD;     // Load the low byte for a 50ms delay
+*** ERROR C202 IN LINE 7 OF Timer.c: 'TL0': undefined identifier
+   8   1          ET0 = 1;        // Enable Timer 0 interrupt
+*** ERROR C202 IN LINE 8 OF Timer.c: 'ET0': undefined identifier
+   9   1          EA = 1;         // Enable global interrupts
+*** ERROR C202 IN LINE 9 OF Timer.c: 'EA': undefined identifier
+  10   1      }
+  11          
+  12          void start_timer()
+  13          {
+  14   1          TR0 = 1;        // Start Timer 0
+*** ERROR C202 IN LINE 14 OF Timer.c: 'TR0': undefined identifier
+  15   1      }
+  16          
+  17          void stop_timer()
+  18          {
+  19   1          TR0 = 0;        // Stop Timer 0
+*** ERROR C202 IN LINE 19 OF Timer.c: 'TR0': undefined identifier
+  20   1      }
+  21          
+  22          void timer0_isr() interrupt 1 
+  23          {
+  24   1          static unsigned int clock = 0;
+  25   1      
+  26   1          clock++;
+  27   1      
+  28   1          // When the count reaches 20 (20 * 50ms = 1 second), toggle the LED
+  29   1          if (clock == 14)          // practically 14 clock -> 1 sec
+  30   1          {
+  31   2              clock = 0;            // Reset the count for the next second
+  32   2          }
+  33   1      
+  34   1          TF0 = 0;                  // Clear the interrupt flag
+*** ERROR C202 IN LINE 34 OF Timer.c: 'TF0': undefined identifier
+  35   1      }
+  36          
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  8 ERROR(S)

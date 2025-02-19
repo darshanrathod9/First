@@ -1,0 +1,48 @@
+C51 COMPILER V9.60.0.0   BLUETOOTH                                                         10/21/2023 11:31:50 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE BLUETOOTH
+OBJECT MODULE PLACED IN .\Objects\Bluetooth.obj
+COMPILER INVOKED BY: D:\Keil\C51\BIN\C51.EXE Bluetooth.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\Bl
+                    -uetooth.lst) TABS(2) OBJECT(.\Objects\Bluetooth.obj)
+
+line level    source
+
+   1          
+   2          void delay(unsigned int itime)
+   3          {
+   4   1         unsigned int i,j;
+   5   1         for(i=0;i<itime;i++)
+   6   1           for(j=0;j<120;j++);
+   7   1      }
+   8          
+   9          void Uart_Init()
+  10          {
+  11   1         SCON = 0x50;             // SCON: mode 1, 8-bit UART, enable receive 
+*** ERROR C202 IN LINE 11 OF Bluetooth.c: 'SCON': undefined identifier
+  12   1         TMOD |= 0x20;            // TMOD: timer 1, mode 2, 8-bit 
+*** ERROR C202 IN LINE 12 OF Bluetooth.c: 'TMOD': undefined identifier
+  13   1         TH1 = 0xFD;              // TH1: for 9600 baud
+*** ERROR C202 IN LINE 13 OF Bluetooth.c: 'TH1': undefined identifier
+  14   1         TR1 = 1;                 //TR1: timer 1 run 
+*** ERROR C202 IN LINE 14 OF Bluetooth.c: 'TR1': undefined identifier
+  15   1      }
+  16          
+  17          void send_str (unsigned char *str)
+  18          {
+  19   1          while(*str)
+  20   1          {
+  21   2             send_char(*str++);
+  22   2          }
+  23   1          send_char(0x0D);
+  24   1      }
+  25          
+  26          
+  27          void send_char (unsigned char chr)
+  28          {
+  29   1         SBUF = chr;
+  30   1         while (TI==0);           //Wait until the character is completely sent 
+  31   1         TI=0;                    //Reset the Transmit Interrupt flag 
+  32   1      }
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  4 ERROR(S)

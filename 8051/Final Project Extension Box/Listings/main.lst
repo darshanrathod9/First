@@ -1,0 +1,178 @@
+C51 COMPILER V9.60.0.0   MAIN                                                              11/27/2023 23:59:02 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\Keil\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main.ls
+                    -t) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include "main.h"
+   2          
+   3          unsigned int state1,state2,flag1=1,flag2=1,once1=1,once2=1;
+   4          
+   5          void setup()
+   6          {
+   7   1        Uart_Init();
+   8   1        init_Timer0();
+   9   1        
+  10   1        TLED = 0;
+  11   1        LED1 = 0;
+  12   1        LED2 = 0;
+  13   1        BT1 = 1;          // BT 1 -> INPUT
+  14   1        BT2 = 1;          // BT 1 -> INPUT
+  15   1        Relay1 = 0;       // SET AS OUTPUT
+  16   1        Relay2 = 0;       // SET AS OUTPUT      
+  17   1      }
+  18          
+  19          void main()
+  20          {
+  21   1        setup();
+  22   1      
+  23   1        Relay1 = 1;         // Relay 1 -> OFF
+  24   1        Relay2 = 1;         // Relay 1 -> OFF
+  25   1        
+  26   1        while(1)
+  27   1        {
+  28   2          if(RI)
+  29   2          {
+  30   3            incoming_com = SBUF;    // incoming bluetooth message
+  31   3            temp = incoming_com;
+  32   3            RI=0;
+  33   3          }                       // Initial state of the MCU 
+  34   2          
+  35   2          if(flag1 == 1)          // Initial state of Relay1
+  36   2          {
+  37   3            state1 = BT1;
+  38   3            switch(state1)
+  39   3            {
+  40   4              case 0:
+  41   4                break;
+  42   4              
+  43   4              case 1:
+  44   4                flag1 = 0;
+  45   4                break;
+  46   4            }
+  47   3          }
+  48   2                                            // Manual and Bluetooth controlled switch module starts here
+  49   2          if(BT1 == PRESSED && flag1 == 0)        // Manual switch 1 state check and take action
+  50   2          {
+  51   3            if(once1 == 1)
+  52   3            {
+  53   4              Relay1 = ON;
+  54   4              once1 = 0;
+C51 COMPILER V9.60.0.0   MAIN                                                              11/27/2023 23:59:02 PAGE 2   
+
+  55   4              LED1 = 1;
+  56   4            }
+  57   3            else
+  58   3            {
+  59   4              switch(temp)                    // Bluetooth controlled if switch is on 
+  60   4              {
+  61   5                case 'A':
+  62   5                  Relay1 = ON;
+  63   5                  send_str("Relay1 ON");
+  64   5                  LED1 = 1;
+  65   5                  break;
+  66   5                
+  67   5                case 'B':
+  68   5                  Relay1 = OFF;
+  69   5                  send_str("Relay1 OFF");
+  70   5                  LED1 = 0;
+  71   5                  break;      
+  72   5              }
+  73   4            }
+  74   3          }
+  75   2          else if(BT1 == RELEASED || flag1 == 1)          // completely off if the switch is off
+  76   2          {
+  77   3            if(temp == 'A' || temp == 'B')
+  78   3            {
+  79   4              send_str("First Turn on the Button 1");
+  80   4            }
+  81   3            Relay1 = OFF;
+  82   3            once1 = 1;
+  83   3            LED1 = 0;
+  84   3          }
+  85   2      
+  86   2          switch(temp)
+  87   2          {
+  88   3            case 'C':
+  89   3              Relay2 = ON;
+  90   3              send_str("Relay2 ON");
+  91   3              LED2 = 1; 
+  92   3              break;
+  93   3          
+  94   3            case 'D':
+  95   3              Relay2 = OFF;
+  96   3              send_str("Relay2 OFF");
+  97   3              LED2 = 0;
+  98   3              break;  
+  99   3      
+ 100   3            case 'G':                   // turn off after the timer is done
+ 101   3              toggle = 0;
+ 102   3              break;
+ 103   3            
+ 104   3            case 'H':       
+ 105   3              toggle = 1;               // turn on after the timer is done 
+ 106   3              break;  
+ 107   3            
+ 108   3            case 'S':                   // Stop timer
+ 109   3              stop_timer();
+ 110   3              break;
+ 111   3            
+ 112   3            case 'T':                   // Start timer
+ 113   3              start_timer();
+ 114   3              break;      
+ 115   3          
+ 116   3            case 'U':
+C51 COMPILER V9.60.0.0   MAIN                                                              11/27/2023 23:59:02 PAGE 3   
+
+ 117   3              MINUTES += 5;             // add 5 min to current time 
+ 118   3              send_str(" Added 5 min");
+ 119   3              break;
+ 120   3            
+ 121   3            case 'V':
+ 122   3              MINUTES += 15;            // add 15 min to current time 
+ 123   3              send_str(" Added 15 min");
+ 124   3              break;
+ 125   3            
+ 126   3            case 'W':
+ 127   3              MINUTES += 60;            // add 60 min to current time 
+ 128   3              send_str(" Added 60 min");
+ 129   3              break;
+ 130   3            
+ 131   3            case 'X':
+ 132   3              MINUTES -= 5;             // reduce 5 min to current time 
+ 133   3              send_str(" Reduced 5 min");
+ 134   3              break; 
+ 135   3            
+ 136   3            case 'Y':
+ 137   3              MINUTES -= 15;            // reduce 15 min to current time 
+ 138   3              send_str(" Reduced 15 min");
+ 139   3              break;
+ 140   3            
+ 141   3            case 'Z':
+ 142   3              MINUTES -= 60;            // reduce 60 min to current time
+ 143   3              send_str(" Reduced 60 min");
+ 144   3              break;
+ 145   3          }
+ 146   2              
+ 147   2          temp=0;
+ 148   2          incoming_com = 0;
+ 149   2        }
+ 150   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    641    ----
+   CONSTANT SIZE    =    185    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     26       3
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
